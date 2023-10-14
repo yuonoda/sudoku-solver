@@ -64,7 +64,12 @@ class MyTestCase(unittest.TestCase):
             ],
             dtype=int,
         )
-        assert (got == want).all()
+        assert isinstance(got, np.ndarray), "Return NumPy's NDArray!"
+        assert got.dtype == np.int32, "Return NumPy array with int32 data type!"
+        assert got.ndim == 2, "#dimensions of NumPy array must be 2!"
+        assert (
+            got.shape[0] == 9 and got.shape[1] == 9
+        ), "Size of the NumPy array must be 9x9!"
 
     def test_solve_sudoku_by_backtracking_no_change(self):
         input = np.array(
@@ -84,6 +89,12 @@ class MyTestCase(unittest.TestCase):
         solver = SudokuSolver()
         got = solver.solve_by_backtracking(input)
         want = input
+        assert isinstance(got, np.ndarray), "Return NumPy's NDArray!"
+        assert got.dtype == np.int32, "Return NumPy array with int32 data type!"
+        assert got.ndim == 2, "#dimensions of NumPy array must be 2!"
+        assert (
+            got.shape[0] == 9 and got.shape[1] == 9
+        ), "Size of the NumPy array must be 9x9!"
         assert (got == want).all()
 
     # def test_solve_sudoku_by_backtracking_with_detection_error(self):
