@@ -6,30 +6,14 @@ import numpy as np
 
 class SudokuSolver:
     def __init__(self):
-        self.possible_number_map = {8: [2, 3, 6], 6: [2, 8], 3: [1, 2], 5: [6], 9: [4]}
+        self.possible_number_map = {6: [5], 8: [6]}
         pass
 
     def is_valid_unit(self, unit):
-        """
-        Check if the unit (row/column/block) is valid.
-        """
         unit = [num for num in unit if num != 0]  # Remove zeros (empty cells)
         return len(unit) == len(set(unit))  # Check for duplicates
 
     def is_move_valid(self, sudoku, row, col, num):
-        """
-        Check if placing `num` at the position `(row, col)` is valid in `sudoku` grid.
-
-        Parameters:
-        - sudoku (np.array): 9x9 sudoku grid
-        - row (int): target row index
-        - col (int): target column index
-        - num (int): number to check
-
-        Returns:
-        - bool: True if placing `num` at `(row, col)` is valid, otherwise False.
-        """
-        # Check the row
         if num in sudoku[row, :]:
             return False
 
@@ -126,17 +110,10 @@ class SudokuSolver:
         stack = [input]
         count = 0
         while len(stack) > 0:
-            if count > 10000:
-                return np.zeros((9, 9), dtype=np.int32)
-            count += 1
-
             # マスが全て埋まっていて、有効な解答なら成功
             grid = stack.pop()
             if np.all(grid):
-                if self.is_valid_as_sudoku(grid):
-                    return grid.astype(np.int32)
-                else:
-                    continue
+                return grid.astype(np.int32)
 
             # 最初の空マスを取得
             row = []
@@ -160,62 +137,14 @@ class SudokuSolver:
 
             #  そのマスに入れられる数字を計算
             all_nums = set(range(1, 10))
-            uniq_row_nums, dup_row_nums = self.get_unique_and_duplicates(row)
-            uniq_col_nums, dup_col_nums = self.get_unique_and_duplicates(column)
-            uniq_block_nums, dup_block_nums = self.get_unique_and_duplicates(
-                nums_in_subgrid
-            )
-            used_nums = set(uniq_col_nums) | set(uniq_row_nums) | set(uniq_block_nums)
+            used_nums = set(row) | set(column) | set(nums_in_subgrid)
             missing_nums = list(all_nums - used_nums)
 
-            # 空マスに候補を入れたグリッドを追加
-            new_grid = grid.copy()
-            for missing_num in missing_nums:
-                new_grid[i, j] = missing_num
-                stack.append(new_grid)
-
-            # 行の誤り訂正
-            if len(dup_row_nums) > 0:
-                for l in range(0, 9):
-                    if l == j:
-                        continue
-                    original_num = new_grid[i, l]
-                    if not original_num in dup_row_nums:
-                        continue
-                    possible_nums = self.possible_number_map.get(original_num, [])
-                    for possible_num in possible_nums:
-                        new_new_grid = new_grid.copy()
-                        new_new_grid[i, l] = possible_num
-                        stack.append(new_new_grid)
-
-            # 列の誤り訂正
-            if len(dup_col_nums) > 0:
-                for k in range(0, 9):
-                    if k == i:
-                        continue
-                    original_num = new_grid[k, j]
-                    if not original_num in dup_col_nums:
-                        continue
-                    possible_nums = self.possible_number_map.get(original_num, [])
-                    for possible_num in possible_nums:
-                        new_new_grid = new_grid.copy()
-                        new_new_grid[k, j] = possible_num
-                        stack.append(new_new_grid)
-
-            # ブロックの誤り訂正:
-            if len(dup_block_nums) > 0:
-                subgrid_start_row, subgrid_start_col = 3 * (i // 3), 3 * (j // 3)
-                for k in range(subgrid_start_row, subgrid_start_row + 3):
-                    for l in range(subgrid_start_col, subgrid_start_col + 3):
-                        if k == i and l == j:
-                            continue
-                        original_num = new_grid[k, l]
-                        if not original_num in dup_block_nums:
-                            continue
-                        possible_nums = self.possible_number_map.get(original_num, [])
-                        for possible_num in possible_nums:
-                            new_new_grid = new_grid.copy()
-                            new_new_grid[k, l] = possible_num
-                            stack.append(new_new_grid)
+            # 空マスに候補を入れた行列を追加
+            for num in missing_nums:
+                new_matrix = grid.copy()
+                new_matrix[i, j] = num
+                stack.append(new_matrix)
+                continue
 
         return np.zeros((9, 9), dtype=np.int32)
