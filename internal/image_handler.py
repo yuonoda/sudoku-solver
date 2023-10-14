@@ -1,7 +1,55 @@
+import pickle
+
+import cv2
 import numpy.typing as npt
 import numpy as np
 
 
 class ImageHandler:
+    def __init__(self):
+        # モデル読み込み
+        # TODO パスを動的にする
+        with open("./rbf_svm.pickle", "rb") as f:
+            self.clf = pickle.loads(f.read())
+        # TODO エラー処理
+
+    def clip_images(self, img: npt.NDArray[np.uint8]) -> npt.NDArray:
+        # 二値データに変換
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        _, thresh = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
+
+        # 輪郭を見つける
+        contours, _ = cv2.findContours(
+            thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+        )
+        largest_contour = max(contours, key=cv2.contourArea)
+        x, y, w, h = cv2.boundingRect(largest_contour)
+
+        # 各マス目の画像を抽出し、リストに保存
+        cell_images = []
+        stepx = w // 9
+        stepy = h // 9
+        trim_size_x = stepx // 8
+        trim_size_y = stepy // 8
+        empty_threshold = 100
+        for i in range(9):
+            for j in range(9):
+                cell = img[
+                    y + i * stepy + trim_size_y : y + (i + 1) * stepy - trim_size_y,
+                    x + j * stepx + trim_size_x : x + (j + 1) * stepx - trim_size_x,
+                ]
+                resized_cell = cv2.resize(cell, (28, 28))
+                gray_cell = cv2.cvtColor(resized_cell, cv2.COLOR_BGR2GRAY)
+                normalized_cell = gray_cell / 255.0
+                input_data = normalized_cell.reshape((28, 28, 1))
+                cell_images.append(input_data)
+        return np.array(cell_images)
+
     def detect_numbers(self, image: npt.NDArray[np.uint8]) -> npt.NDArray:
-        return np.zeros((9, 9), dtype="int32")
+        model_input = np.array(image)
+        model_input_2d = model_input.reshape(model_input.shape[0], -1)
+        predicted = self.clf.predict(model_input_2d)
+
+        # 9x9の行列に変換
+        predicted = predicted.reshape((9, 9))
+        return predicted

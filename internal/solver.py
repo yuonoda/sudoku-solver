@@ -3,6 +3,9 @@ import numpy as np
 
 
 class SudokuSolver:
+    def __init__(self):
+        pass
+
     def get_subgrid(self, grid: npt.NDArray, i, j) -> npt.NDArray[np.int32]:
         # 座標(i, j)が属する3x3の領域を見つける。
         # // は床関数を表し、整数の商を取得します。
