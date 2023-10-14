@@ -26,11 +26,18 @@ class SudokuSolver:
         i = 0
 
         # スタックにデータがあるかぎり繰り返す
+        count = 0
         while stack:
+            # TODO: remove this
+            # 流石に1万回やっても解けなかったら諦める
+            if count > 10000:
+                return np.zeros((9, 9), dtype=np.int32)
+            count += 1
+
             # マスが全て埋まっていたら成功
             matrix = stack.pop()
             if np.all(matrix):
-                return matrix
+                return matrix.astype(np.int32)
 
             # 　最初の空マスを取得
             row = npt.NDArray
@@ -54,6 +61,10 @@ class SudokuSolver:
             all_nums = set(range(1, 10))
             used_nums = set(row) | set(column) | set(nums_in_subgrid)
             missing_nums = list(all_nums - used_nums)
+
+            # 入れられる数字がなくなれば破棄
+            if len(missing_nums) == 0:
+                continue
 
             # 空マスに候補を入れた行列を追加
             for num in missing_nums:
