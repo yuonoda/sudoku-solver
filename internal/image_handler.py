@@ -29,8 +29,8 @@ class ImageHandler:
         cell_images = []
         stepx = w // 9
         stepy = h // 9
-        trim_size_x = stepx // 8
-        trim_size_y = stepy // 8
+        trim_size_x = stepx // 7
+        trim_size_y = stepy // 7
         empty_threshold = 100
         for i in range(9):
             for j in range(9):
