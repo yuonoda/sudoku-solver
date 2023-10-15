@@ -6,7 +6,7 @@ import numpy as np
 
 class SudokuSolver:
     def __init__(self):
-        self.possible_number_map = {8: [2, 3, 6], 6: [2]}
+        self.possible_number_map = {8: [2, 3, 6], 6: [2, 8], 3: [1, 2], 5: [6], 9: [4]}
         pass
 
     def is_valid_unit(self, unit):
@@ -63,6 +63,9 @@ class SudokuSolver:
         return True
 
     def find_and_suggest_valid_grids(self, grid) -> npt.NDArray[np.int32]:
+        if self.is_valid_as_sudoku(grid):
+            return np.array([grid])
+
         suggested_grids = []
         for i in range(9):
             for j in range(9):
@@ -98,13 +101,13 @@ class SudokuSolver:
         i = 0
 
         # スタックにデータがあるかぎり繰り返す
-        count = 0
+        # count = 0
         while len(stack) > 0:
-            # TODO: remove this
-            # 流石に1万回やっても解けなかったら諦める
-            if count > 10000:
-                return np.zeros((9, 9), dtype=np.int32)
-            count += 1
+            # # TODO: remove this
+            # # 流石に1万回やっても解けなかったら諦める
+            # if count > 10000:
+            #     return np.zeros((9, 9), dtype=np.int32)
+            # count += 1
 
             # マスが全て埋まっていたら成功
             grid = stack.pop()

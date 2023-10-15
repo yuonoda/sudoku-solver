@@ -42,6 +42,42 @@ class MyTestCase(unittest.TestCase):
         print(got.shape)
         assert (got == want).all()
 
+    def test_find_and_suggest_valid_grids_no_change(self):
+        input = np.array(
+            [
+                [2, 3, 5, 7, 9, 1, 6, 4, 8],
+                [1, 6, 9, 4, 2, 8, 7, 5, 3],
+                [7, 0, 8, 6, 0, 5, 9, 2, 1],
+                [3, 9, 6, 2, 7, 4, 8, 1, 5],
+                [5, 2, 1, 3, 8, 9, 4, 0, 7],
+                [4, 8, 7, 1, 0, 6, 3, 9, 2],
+                [8, 0, 3, 9, 6, 2, 1, 7, 4],
+                [9, 7, 4, 0, 1, 3, 2, 8, 6],
+                [6, 1, 2, 8, 4, 7, 5, 3, 9],
+            ],
+            dtype=np.int32,
+        )
+        solver = SudokuSolver()
+        got = solver.find_and_suggest_valid_grids(input)
+        want = np.array(
+            [
+                [
+                    [2, 3, 5, 7, 9, 1, 6, 4, 8],
+                    [1, 6, 9, 4, 2, 8, 7, 5, 3],
+                    [7, 0, 8, 6, 0, 5, 9, 2, 1],
+                    [3, 9, 6, 2, 7, 4, 8, 1, 5],
+                    [5, 2, 1, 3, 8, 9, 4, 0, 7],
+                    [4, 8, 7, 1, 0, 6, 3, 9, 2],
+                    [8, 0, 3, 9, 6, 2, 1, 7, 4],
+                    [9, 7, 4, 0, 1, 3, 2, 8, 6],
+                    [6, 1, 2, 8, 4, 7, 5, 3, 9],
+                ],
+            ],
+            dtype=np.int32,
+        )
+        print(got.shape)
+        assert (got == want).all()
+
     def test_is_valid_as_sudoku(self):
         input = np.array(
             [
