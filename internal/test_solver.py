@@ -6,6 +6,25 @@ from solver import SudokuSolver
 
 
 class MyTestCase(unittest.TestCase):
+    def test_is_valid_as_sudoku(self):
+        input = np.array(
+            [
+                [2, 3, 5, 7, 9, 1, 6, 4, 8],
+                [1, 8, 9, 4, 2, 8, 7, 5, 3],  # 2nd 8 is truly 6
+                [7, 0, 8, 6, 0, 5, 9, 2, 1],
+                [3, 9, 6, 2, 7, 4, 8, 1, 5],
+                [5, 2, 1, 3, 8, 9, 4, 0, 7],
+                [4, 8, 7, 1, 0, 6, 3, 9, 2],
+                [8, 0, 3, 9, 6, 2, 1, 7, 4],
+                [9, 7, 4, 0, 1, 3, 2, 8, 6],
+                [6, 1, 2, 8, 4, 7, 5, 3, 9],
+            ],
+            dtype=np.int32,
+        )
+        solver = SudokuSolver()
+        got = solver.is_valid_as_sudoku(input)
+        assert got == False
+
     def test_get_subgrid(self):
         arg1 = np.array(
             [
@@ -97,40 +116,45 @@ class MyTestCase(unittest.TestCase):
         ), "Size of the NumPy array must be 9x9!"
         assert (got == want).all()
 
-    # def test_solve_sudoku_by_backtracking_with_detection_error(self):
-    #     input = np.array(
-    #         [
-    #             [1, 2, 3, 4, 5, 6, 0, 8, 9],
-    #             [2, 3, 4, 5, 6, 7, 8, 9, 1],
-    #             [3, 4, 5, 6, 7, 8, 4, 1, 2],  # 7th 4 is 9
-    #             [4, 5, 6, 7, 8, 9, 1, 2, 3],
-    #             [5, 6, 7, 8, 9, 1, 2, 3, 4],
-    #             [6, 7, 4, 0, 1, 2, 3, 4, 5],  # 3rd 4 is 9
-    #             [7, 8, 9, 1, 2, 3, 4, 5, 6],
-    #             [8, 9, 1, 2, 3, 4, 5, 6, 7],
-    #             [9, 1, 2, 3, 4, 5, 6, 7, 0],
-    #         ],
-    #         dtype=np.int32,
-    #     )
-    #
-    #     got = solve_by_backtracking(input)
-    #     # want = np.array(
-    #     #     [
-    #     #         [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    #     #         [2, 3, 4, 5, 6, 7, 8, 9, 1],
-    #     #         [3, 4, 5, 6, 7, 8, 9, 1, 2],
-    #     #         [4, 5, 6, 7, 8, 9, 1, 2, 3],
-    #     #         [5, 6, 7, 8, 9, 1, 2, 3, 4],
-    #     #         [6, 7, 8, 9, 1, 2, 3, 4, 5],
-    #     #         [7, 8, 9, 1, 2, 3, 4, 5, 6],
-    #     #         [8, 9, 1, 2, 3, 4, 5, 6, 7],
-    #     #         [9, 1, 2, 3, 4, 5, 6, 7, 8],
-    #     #     ],
-    #     #     dtype=np.int32,
-    #     # )
-    #     want = np.zeros((9, 9), dtype=np.int32)
-    #     assert (got == want).all()
-    #
+    def test_solve_sudoku_by_backtracking_with_detection_error(self):
+        input = np.array(
+            [
+                [2, 3, 5, 7, 9, 1, 6, 4, 8],
+                [1, 8, 9, 4, 2, 8, 7, 5, 3],  # 2nd 8 is truly 6
+                [7, 0, 8, 6, 0, 5, 9, 2, 1],
+                [3, 9, 6, 2, 7, 4, 8, 1, 5],
+                [5, 2, 1, 3, 8, 9, 4, 0, 7],
+                [4, 8, 7, 1, 0, 6, 3, 9, 2],
+                [8, 0, 3, 9, 6, 2, 1, 7, 4],
+                [9, 7, 4, 0, 1, 3, 2, 8, 6],
+                [6, 1, 2, 8, 4, 7, 5, 3, 9],
+            ],
+            dtype=np.int32,
+        )
+
+        want = np.array(
+            [
+                [2, 3, 5, 7, 9, 1, 6, 4, 8],
+                [1, 6, 9, 4, 2, 8, 7, 5, 3],
+                [7, 4, 8, 6, 3, 5, 9, 2, 1],
+                [3, 9, 6, 2, 7, 4, 8, 1, 5],
+                [5, 2, 1, 3, 8, 9, 4, 6, 7],
+                [4, 8, 7, 1, 5, 6, 3, 9, 2],
+                [8, 5, 3, 9, 6, 2, 1, 7, 4],
+                [9, 7, 4, 5, 1, 3, 2, 8, 6],
+                [6, 1, 2, 8, 4, 7, 5, 3, 9],
+            ],
+            dtype=int,
+        )
+        solver = SudokuSolver()
+        got = solver.solve_by_backtracking(input)
+        assert isinstance(got, np.ndarray), "Return NumPy's NDArray!"
+        assert got.dtype == np.int32, "Return NumPy array with int32 data type!"
+        assert got.ndim == 2, "#dimensions of NumPy array must be 2!"
+        assert (
+            got.shape[0] == 9 and got.shape[1] == 9
+        ), "Size of the NumPy array must be 9x9!"
+        assert (got == want).all()
 
 
 if __name__ == "__main__":

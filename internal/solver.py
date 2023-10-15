@@ -4,7 +4,33 @@ import numpy as np
 
 class SudokuSolver:
     def __init__(self):
+        self.possible_number_map = {8: [6, 3, 5], 9: [6]}
         pass
+
+    def is_valid_unit(self, unit):
+        """
+        Check if the unit (row/column/block) is valid.
+        """
+        unit = [num for num in unit if num != 0]  # Remove zeros (empty cells)
+        return len(unit) == len(set(unit))  # Check for duplicates
+
+    def is_valid_as_sudoku(self, grid) -> bool:
+        # Check rows and columns
+        for i in range(9):
+            if not self.is_valid_unit(grid[i]) or not self.is_valid_unit(
+                [grid[j][i] for j in range(9)]
+            ):
+                return False
+
+        # Check 3x3 blocks
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                if not self.is_valid_unit(
+                    [grid[x][y] for x in range(i, i + 3) for y in range(j, j + 3)]
+                ):
+                    return False
+
+        return True
 
     def get_subgrid(self, grid: npt.NDArray, i, j) -> npt.NDArray[np.int32]:
         # 座標(i, j)が属する3x3の領域を見つける。
@@ -39,7 +65,7 @@ class SudokuSolver:
             if np.all(matrix):
                 return matrix.astype(np.int32)
 
-            # 　最初の空マスを取得
+            # 最初の空マスを取得
             row = npt.NDArray
             column = npt.NDArray
             found = False
@@ -61,10 +87,6 @@ class SudokuSolver:
             all_nums = set(range(1, 10))
             used_nums = set(row) | set(column) | set(nums_in_subgrid)
             missing_nums = list(all_nums - used_nums)
-
-            # 入れられる数字がなくなれば破棄
-            if len(missing_nums) == 0:
-                continue
 
             # 空マスに候補を入れた行列を追加
             for num in missing_nums:
