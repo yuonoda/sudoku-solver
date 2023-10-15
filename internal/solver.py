@@ -6,7 +6,7 @@ import numpy as np
 
 class SudokuSolver:
     def __init__(self):
-        self.possible_number_map = {8: [6, 3, 5], 9: [6]}
+        self.possible_number_map = {8: [2, 3, 6], 6: [2]}
         pass
 
     def is_valid_unit(self, unit):
@@ -99,7 +99,7 @@ class SudokuSolver:
 
         # スタックにデータがあるかぎり繰り返す
         count = 0
-        while stack:
+        while len(stack) > 0:
             # TODO: remove this
             # 流石に1万回やっても解けなかったら諦める
             if count > 10000:
@@ -107,26 +107,26 @@ class SudokuSolver:
             count += 1
 
             # マスが全て埋まっていたら成功
-            matrix = stack.pop()
-            if np.all(matrix):
-                return matrix.astype(np.int32)
+            grid = stack.pop()
+            if np.all(grid):
+                return grid.astype(np.int32)
 
             # 最初の空マスを取得
             row = npt.NDArray
             column = npt.NDArray
             found = False
-            for i in range(len(matrix)):
-                row = matrix[i, :]
+            for i in range(len(grid)):
+                row = grid[i, :]
                 for j in range(len(row)):
                     if row[j] == 0:
-                        column = matrix[:, j]
+                        column = grid[:, j]
                         found = True
                         break
                 if found:
                     break
 
             # サブグリッドを取得
-            subgrid = self.get_subgrid(matrix, i, j)
+            subgrid = self.get_subgrid(grid, i, j)
             nums_in_subgrid = np.unique(subgrid)
 
             #  そのマスに入れられる数字を計算
@@ -136,7 +136,10 @@ class SudokuSolver:
 
             # 空マスに候補を入れた行列を追加
             for num in missing_nums:
-                new_matrix = matrix.copy()
-                new_matrix[i, j] = num
-                stack.append(new_matrix)
-                continue
+                new_grid = grid.copy()
+                new_grid[i, j] = num
+                if self.is_valid_as_sudoku(new_grid) == False:
+                    continue
+                stack.append(new_grid)
+
+        return np.zeros((9, 9), dtype=np.int32)
