@@ -6,6 +6,42 @@ from solver import SudokuSolver
 
 
 class MyTestCase(unittest.TestCase):
+    def test_find_and_suggest_valid_grids(self):
+        input = np.array(
+            [
+                [2, 3, 5, 7, 9, 1, 6, 4, 8],
+                [1, 8, 9, 4, 2, 8, 7, 5, 3],  # 2nd 8 is truly 6
+                [7, 0, 8, 6, 0, 5, 9, 2, 1],
+                [3, 9, 6, 2, 7, 4, 8, 1, 5],
+                [5, 2, 1, 3, 8, 9, 4, 0, 7],
+                [4, 8, 7, 1, 0, 6, 3, 9, 2],
+                [8, 0, 3, 9, 6, 2, 1, 7, 4],
+                [9, 7, 4, 0, 1, 3, 2, 8, 6],
+                [6, 1, 2, 8, 4, 7, 5, 3, 9],
+            ],
+            dtype=np.int32,
+        )
+        solver = SudokuSolver()
+        got = solver.find_and_suggest_valid_grids(input)
+        want = np.array(
+            [
+                [
+                    [2, 3, 5, 7, 9, 1, 6, 4, 8],
+                    [1, 6, 9, 4, 2, 8, 7, 5, 3],
+                    [7, 0, 8, 6, 0, 5, 9, 2, 1],
+                    [3, 9, 6, 2, 7, 4, 8, 1, 5],
+                    [5, 2, 1, 3, 8, 9, 4, 0, 7],
+                    [4, 8, 7, 1, 0, 6, 3, 9, 2],
+                    [8, 0, 3, 9, 6, 2, 1, 7, 4],
+                    [9, 7, 4, 0, 1, 3, 2, 8, 6],
+                    [6, 1, 2, 8, 4, 7, 5, 3, 9],
+                ],
+            ],
+            dtype=np.int32,
+        )
+        print(got.shape)
+        assert (got == want).all()
+
     def test_is_valid_as_sudoku(self):
         input = np.array(
             [
@@ -18,6 +54,44 @@ class MyTestCase(unittest.TestCase):
                 [8, 0, 3, 9, 6, 2, 1, 7, 4],
                 [9, 7, 4, 0, 1, 3, 2, 8, 6],
                 [6, 1, 2, 8, 4, 7, 5, 3, 9],
+            ],
+            dtype=np.int32,
+        )
+        solver = SudokuSolver()
+        got = solver.is_valid_as_sudoku(input)
+        assert got == False
+
+    def test_is_valid_as_sudoku_real_data(self):
+        input = np.array(
+            [
+                [0, 0, 0, 2, 0, 0, 0, 0, 0],
+                [6, 9, 5, 0, 0, 8, 2, 4, 3],
+                [0, 0, 2, 5, 6, 0, 1, 0, 0],
+                [5, 0, 6, 0, 0, 2, 0, 0, 1],
+                [0, 0, 9, 4, 8, 5, 6, 0, 2],
+                [0, 8, 0, 6, 1, 0, 4, 5, 0],
+                [0, 0, 0, 9, 0, 3, 8, 0, 4],
+                [3, 2, 0, 0, 4, 6, 9, 0, 5],
+                [0, 0, 4, 8, 0, 1, 0, 2, 0],
+            ],
+            dtype=np.int32,
+        )
+        solver = SudokuSolver()
+        got = solver.is_valid_as_sudoku(input)
+        assert got == True
+
+    def test_is_valid_as_sudoku_real_data2(self):
+        input = np.array(
+            [
+                [0, 0, 0, 2, 0, 0, 0, 0, 0],
+                [6, 9, 5, 0, 0, 3, 2, 1, 3],
+                [0, 0, 2, 5, 6, 0, 1, 0, 0],
+                [3, 0, 6, 0, 0, 2, 0, 0, 1],
+                [0, 0, 3, 1, 3, 3, 6, 0, 2],
+                [0, 8, 0, 6, 1, 0, 1, 3, 0],
+                [0, 0, 0, 3, 0, 3, 3, 0, 1],
+                [6, 2, 0, 0, 1, 6, 9, 0, 3],
+                [0, 0, 4, 6, 0, 1, 0, 4, 0],
             ],
             dtype=np.int32,
         )

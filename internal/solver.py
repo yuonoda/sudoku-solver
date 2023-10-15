@@ -1,3 +1,5 @@
+import copy
+
 import numpy.typing as npt
 import numpy as np
 
@@ -13,6 +15,34 @@ class SudokuSolver:
         """
         unit = [num for num in unit if num != 0]  # Remove zeros (empty cells)
         return len(unit) == len(set(unit))  # Check for duplicates
+
+    def is_move_valid(self, sudoku, row, col, num):
+        """
+        Check if placing `num` at the position `(row, col)` is valid in `sudoku` grid.
+
+        Parameters:
+        - sudoku (np.array): 9x9 sudoku grid
+        - row (int): target row index
+        - col (int): target column index
+        - num (int): number to check
+
+        Returns:
+        - bool: True if placing `num` at `(row, col)` is valid, otherwise False.
+        """
+        # Check the row
+        if num in sudoku[row, :]:
+            return False
+
+        # Check the column
+        if num in sudoku[:, col]:
+            return False
+
+        # Check the 3x3 block
+        start_row, start_col = 3 * (row // 3), 3 * (col // 3)
+        if num in sudoku[start_row : start_row + 3, start_col : start_col + 3]:
+            return False
+
+        return True
 
     def is_valid_as_sudoku(self, grid) -> bool:
         # Check rows and columns
@@ -31,6 +61,22 @@ class SudokuSolver:
                     return False
 
         return True
+
+    def find_and_suggest_valid_grids(self, grid) -> npt.NDArray[np.int32]:
+        suggested_grids = []
+        for i in range(9):
+            for j in range(9):
+                num = grid[i][j]
+                if grid[i][j] != 0:  # このセルに数字が入っている場合
+                    # 誤りの可能性がある数字は、他の数字に入れ替えて、有効なら提案する
+                    possible_nums = self.possible_number_map.get(num, [])
+                    for new_num in possible_nums:
+                        if self.is_move_valid(grid, i, j, new_num):
+                            new_grid = copy.deepcopy(grid)
+                            new_grid[i][j] = new_num
+                            suggested_grids.append(new_grid)
+
+        return np.array(suggested_grids)
 
     def get_subgrid(self, grid: npt.NDArray, i, j) -> npt.NDArray[np.int32]:
         # 座標(i, j)が属する3x3の領域を見つける。
