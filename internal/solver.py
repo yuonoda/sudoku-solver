@@ -124,7 +124,12 @@ class SudokuSolver:
     def solve_by_backtracking(self, input: npt.NDArray) -> npt.NDArray[np.int32]:
         # スタックにデータがあるかぎり繰り返す
         stack = [input]
+        count = 0
         while len(stack) > 0:
+            if count > 10000:
+                return np.zeros((9, 9), dtype=np.int32)
+            count += 1
+
             # マスが全て埋まっていて、有効な解答なら成功
             grid = stack.pop()
             if np.all(grid):
