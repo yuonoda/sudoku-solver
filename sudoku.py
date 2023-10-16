@@ -16,16 +16,6 @@ def solve(image: npt.NDArray[np.uint8]) -> npt.NDArray[np.int32]:
 
     # 数独の解決
     s = SudokuSolver()
-    suggested_grids = s.find_and_suggest_valid_grids(grid)
-    answer = np.zeros((9, 9), dtype=np.int32)
-    for grid in suggested_grids:
-        print("suggested_grid:", grid)
-        got = s.solve_by_backtracking(grid)
-
-        # すべてゼロでない時は、スキップ
-        if np.all(got):
-            answer = got
-            continue
-
+    answer = s.solve_by_backtracking(grid)
     print("answer:", answer)
     return answer
