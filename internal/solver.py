@@ -6,7 +6,7 @@ import numpy as np
 
 class SudokuSolver:
     def __init__(self):
-        self.possible_number_map = {6: [5], 8: [6]}
+        self.possible_number_map = {8: [2, 3, 6], 6: [2, 8], 3: [1, 2], 5: [6], 9: [4]}
         pass
 
     def is_valid_unit(self, unit):
