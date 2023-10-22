@@ -20,7 +20,7 @@ def solve(image: npt.NDArray[np.uint8]) -> npt.NDArray[np.int32]:
     answer = np.zeros((9, 9), dtype=np.int32)
     suggested_count = len(suggested_grids)
     print("suggested_count:", suggested_count)
-    if suggested_count > 20:
+    if suggested_count > 10:
         return answer
     for grid in suggested_grids:
         print("suggested_grid:", grid)

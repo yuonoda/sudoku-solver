@@ -14,7 +14,7 @@ class ImageHandler:
         # モデル読み込み
         current_script_path = os.path.abspath(__file__)
         current_script_dir = os.path.dirname(current_script_path)
-        path = os.path.join(current_script_dir, "../internal/clf_svm_2.pkl.gz")
+        path = os.path.join(current_script_dir, "../internal/clf_svm_3.pkl.gz")
         with gzip.open(path, "rb") as f:
             self.clf = pickle.load(f)
         # TODO エラー処理
