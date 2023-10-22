@@ -1,4 +1,5 @@
 import gzip
+import os
 import pickle
 from datetime import datetime
 
@@ -11,8 +12,10 @@ import matplotlib.pyplot as plt
 class ImageHandler:
     def __init__(self):
         # モデル読み込み
-        # TODO パスを動的にする
-        with gzip.open("./internal/clf_svm_1.pkl.gz", "rb") as f:
+        current_script_path = os.path.abspath(__file__)
+        current_script_dir = os.path.dirname(current_script_path)
+        path = os.path.join(current_script_dir, "../internal/clf_svm_1.pkl.gz")
+        with gzip.open(path, "rb") as f:
             self.clf = pickle.load(f)
         # TODO エラー処理
 
