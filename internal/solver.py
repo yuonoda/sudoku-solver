@@ -147,4 +147,8 @@ class SudokuSolver:
                 stack.append(new_matrix)
                 continue
 
+            # 1万個以上候補があったら諦める
+            if len(stack) > 10000:
+                break
+
         return np.zeros((9, 9), dtype=np.int32)
