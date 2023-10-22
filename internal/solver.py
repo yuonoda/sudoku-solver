@@ -110,6 +110,11 @@ class SudokuSolver:
         stack = [input]
         count = 0
         while len(stack) > 0:
+            # 1万回以上繰り返したら、解答失敗として終了
+            if count > 10000:
+                return np.zeros((9, 9), dtype=np.int32)
+            count += 1
+
             # マスが全て埋まっていて、有効な解答なら成功
             grid = stack.pop()
             if np.all(grid):
@@ -146,9 +151,5 @@ class SudokuSolver:
                 new_matrix[i, j] = num
                 stack.append(new_matrix)
                 continue
-
-            # 1万個以上候補があったら諦める
-            if len(stack) > 10000:
-                break
 
         return np.zeros((9, 9), dtype=np.int32)
