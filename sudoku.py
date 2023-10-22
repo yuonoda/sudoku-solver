@@ -18,6 +18,10 @@ def solve(image: npt.NDArray[np.uint8]) -> npt.NDArray[np.int32]:
     s = SudokuSolver()
     suggested_grids = s.find_and_suggest_valid_grids(grid)
     answer = np.zeros((9, 9), dtype=np.int32)
+    suggested_count = len(suggested_grids)
+    print("suggested_count:", suggested_count)
+    if suggested_count > 20:
+        return answer
     for grid in suggested_grids:
         print("suggested_grid:", grid)
         got = s.solve_by_backtracking(grid)
