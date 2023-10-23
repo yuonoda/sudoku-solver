@@ -160,15 +160,12 @@ class SudokuSolver:
         stack = [input]
         count = 0
         while len(stack) > 0:
-            print("stack size:", len(stack))
-            print("count:", count)
             if count > 10000:
                 return np.zeros((9, 9), dtype=np.int32)
             count += 1
 
             # マスが全て埋まっていて、有効な解答なら成功
             grid = stack.pop()
-            print("grid:", grid)
             if np.all(grid):
                 if self.is_valid_as_sudoku(grid):
                     return grid.astype(np.int32)
@@ -190,7 +187,6 @@ class SudokuSolver:
                         break
                 if found:
                     break
-            print(f"{i},{j} is empty")
 
             # ブロックを取得
             subgrid = self.get_subgrid(grid, i, j)
@@ -204,9 +200,6 @@ class SudokuSolver:
                 nums_in_subgrid
             )
             used_nums = set(uniq_col_nums) | set(uniq_row_nums) | set(uniq_block_nums)
-            print("uniq_row_nums:", uniq_row_nums)
-            print("uniq_col_nums:", uniq_col_nums)
-            print("uniq_block_nums:", uniq_block_nums)
             missing_nums = list(all_nums - used_nums)
 
             # 空マスに候補を入れた行列を追加
