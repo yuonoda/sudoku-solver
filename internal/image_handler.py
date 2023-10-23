@@ -24,10 +24,8 @@ class ImageHandler:
         # 白黒データに変換
         gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 
-        # ぼかし
+        # ぼかし&2値化でノイズを除去
         blurred = cv2.GaussianBlur(gray, (11, 11), 90)
-
-        # 二値化
         _, thresh2 = cv2.threshold(blurred, 220, 255, cv2.THRESH_BINARY_INV)
 
         # Canny法でエッジ検出
